@@ -1,7 +1,5 @@
 """User View tests"""
-
-
-from codecs import utf_32_be_decode
+#remember to check vs code didn't accidentally import something!!
 import os
 from unittest import TestCase
 
@@ -78,6 +76,7 @@ class GeneralUserRoutesTestCase(UserBaseViewTestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn("test list users", html)
+            #TODO:check if u1 is showing up
 
     def test_show_user(self):
         """Tests showing in session user's profile page and showing
@@ -98,10 +97,13 @@ class GeneralUserRoutesTestCase(UserBaseViewTestCase):
 
             self.assertEqual(not_in_session_resp.status_code, 200)
             self.assertIn("Follow", not_in_session_html)
+            #TODO:check if u1 is showing up
+            #TODO: break into 2 sep funcs
 
     def test_show_following(self):
         """Tests if user in session and not in session,
         show any user's following page"""
+        # TODO::reword to be more clear
 
         with self.client as c:
             with c.session_transaction() as sess:
@@ -141,21 +143,21 @@ class GeneralUserRoutesTestCase(UserBaseViewTestCase):
 
     def test_handle_following(self):
         """Tests in session user start and stop following another user"""
-
+# TODO: update doc string
         with self.client as c:
             with c.session_transaction() as sess:
                 sess[CURR_USER_KEY] = self.u1_id
 
             u1 = User.query.get(self.u1_id)
             u2 = User.query.get(self.u2_id)
-            u2_username = u2.username
+            u2_username = u2.username #could also just hardcode
 
             resp = c.post(f'/users/follow/{self.u2_id}', follow_redirects=True)
             html = resp.get_data(as_text = True)
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn("Test Following Page", html)
-            self.assertIn(f'{u2_username}', html)
+            self.assertIn(u2_username, html)
 
             # u2 = User.query.get(self.u2_id)
             # u2_username = u2.username
@@ -186,7 +188,7 @@ class GeneralUserRoutesTestCase(UserBaseViewTestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertIn("Test Following Page", html)
-            self.assertNotIn(f'{u3_username}', html)
+            self.assertNotIn(u3_username, html)
 
     def test_edit_user(self):
         """Tests edit in session user"""
@@ -311,6 +313,7 @@ class GeneralUserRoutesTestCase(UserBaseViewTestCase):
 
     def test_user_not_in_session(self):
         """Tests displaying signup page when no user in session"""
+        #TODO: do for every route
 
         with self.client as c:
             resp = c.get('/')

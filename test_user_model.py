@@ -8,6 +8,7 @@
 import os
 from unittest import TestCase, expectedFailure
 from dotenv import load_dotenv
+from sqlalchemy.exc import IntegrityError
 
 from models import db, User, Message, Follows
 
@@ -87,13 +88,19 @@ class UserModelTestCase(TestCase):
         self.assertFalse(followB)
 
 
-    @expectedFailure
+    # @expectedFailure
     def test_signup_fail(self):
         """Test sign up fails with invalid inputs"""
 # import integrity error?
 
-        invalid_user = User.signup('u1','invalidemail', 'password', None)
-        db.session.commit()
+        # invalid_user = User.signup('u90','invalidemail', 'password', None)
+        # db.session.commit()
+
+        # self.assertRaises(IntegrityError, db.session.commit)
+
+        with self.assertRaises(IntegrityError):
+            invalid_user = User.signup('u90','invalidemail', 'password', None)
+            db.session.commit()
 
     def test_signup_valid(self):
         """Test sign up valid with valid inputs"""
@@ -102,6 +109,7 @@ class UserModelTestCase(TestCase):
         db.session.commit()
 
         self.assertIsInstance(u3, User)
+
 
 
     def test_authenticate(self):
